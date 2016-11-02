@@ -1,0 +1,33 @@
+import sys
+from lxml import html
+import requests
+from bs4 import BeautifulSoup
+
+with open("GECON2014.txt", 'w', encoding='UTF-8', newline='') as f:
+    sys.stdout = f
+    i=1
+    while i<10:
+        r = requests.get("http://link.springer.com/chapter/10.1007/978-3-319-14609-6_"+str(i)+"/fulltext.html")
+        soup = BeautifulSoup(r.content, "lxml")
+        print("\n Paper %s" %i)
+        title = soup.find("h1", {"class": "ChapterTitle"})
+        print("\n Title: ", title.text)
+
+        print("\n Authors:")
+        author_info = soup.find_all("ul", {"class": "AuthorName"})
+        for info in author_info:
+            print(info.contents[0].find_all("span", {"class": "AuthorName"})[0].text)
+            try:
+                print(info.contents[1].find_all("span", {"class": "AuthorName_affiliation"})[0].text)
+            except:
+                pass
+#       ''' abstract = soup.find("p", {"class": "Para"})
+ #       print("\n Abstract: ", abstract.text)
+  #      print("\n Keywords:")
+   #     for key in soup.find_all("span", {"class", "Keyword"}):
+    #        print(key.text)
+     #   print("\n References:")
+      #  for cite in soup.find_all("div", {"class": "CitationContent"}):
+       #     print(cite.text)'''
+    i+=1
+f.close()
